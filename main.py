@@ -1,9 +1,26 @@
+from flask import Flask
+from threading import Thread
+import os
 import discord
 from discord.ext import commands
 from discord import app_commands
 import sqlite3
 import random
-import os
+
+# ===== Flask =====
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "BOT is running!"
+
+def run_web():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
+
+def keep_alive():
+    t = Thread(target=run_web)
+    t.start()
 
 # ===== Intent設定 =====
 intents = discord.Intents.default()
@@ -130,5 +147,7 @@ async def pay(
         f"{interaction.user.mention} → {member.mention} に {amount}LD送金！"
     )
 
-# ===== TOKEN =====
+# ===== 起動 =====
+keep_alive()
+
 bot.run(os.getenv("DISCORD_TOKEN"))
