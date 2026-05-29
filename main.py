@@ -79,7 +79,7 @@ async def balance(interaction: discord.Interaction):
     money = cursor.fetchone()[0]
 
     await interaction.response.send_message(
-        f"{interaction.user.mention} の所持金: {money}LD"
+        f"{interaction.user.mention} の所持金: {money}RC"
     )
 
 # ===== お金を稼ぐ =====
@@ -98,7 +98,39 @@ async def work(interaction: discord.Interaction):
     conn.commit()
 
     await interaction.response.send_message(
-        f"{interaction.user.mention} は {earn}LD 稼いだ！"
+        f"{interaction.user.mention} は {earn}RC 稼いだ！"
+    )
+
+# ===== 初期資金 =====
+@bot.tree.command(name="starter", description="初期資金を受け取る")
+async def starter(interaction: discord.Interaction):
+
+    create_user(interaction.user.id)
+
+    cursor.execute(
+        "SELECT money FROM users WHERE user_id = ?",
+        (str(interaction.user.id),)
+    )
+
+    money = cursor.fetchone()[0]
+
+    # すでに受け取っている場合
+    if money > 0:
+        await interaction.response.send_message(
+            "すでに初期資金を受け取っています！"
+        )
+        return
+
+    # 50000RC付与
+    cursor.execute(
+        "UPDATE users SET money = 50000 WHERE user_id = ?",
+        (str(interaction.user.id),)
+    )
+
+    conn.commit()
+
+    await interaction.response.send_message(
+        f"{interaction.user.mention} は 50000RC を受け取った！"
     )
 
 # ===== 送金 =====
@@ -129,6 +161,12 @@ async def pay(
         )
         return
 
+    if amount <= 0:
+        await interaction.response.send_message(
+            "1以上の数字を入力してください！"
+        )
+        return
+
     # 送る側
     cursor.execute(
         "UPDATE users SET money = money - ? WHERE user_id = ?",
@@ -144,7 +182,7 @@ async def pay(
     conn.commit()
 
     await interaction.response.send_message(
-        f"{interaction.user.mention} → {member.mention} に {amount}LD送金！"
+        f"{ctx.author.mention} → {member.mention} に {amount}RC送金！"
     )
 
 # ===== 起動 =====
