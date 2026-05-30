@@ -102,7 +102,7 @@ async def work(interaction: discord.Interaction):
     )
 
 # ===== 初期資金 =====
-@bot.tree.command(name="starter", description="初期資金を受け取る")
+@bot.tree.command(name="git status", description="初期資金を受け取る")
 async def starter(interaction: discord.Interaction):
 
     create_user(interaction.user.id)
