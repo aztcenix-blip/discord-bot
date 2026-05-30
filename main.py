@@ -1,3 +1,5 @@
+print("VERSION ADDMONEY TEST")
+
 from flask import Flask
 from threading import Thread
 import os
