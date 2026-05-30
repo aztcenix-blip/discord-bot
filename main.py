@@ -102,7 +102,7 @@ async def work(interaction: discord.Interaction):
     )
 
 # ===== 初期資金 =====
-@bot.tree.command(name="git status", description="初期資金を受け取る")
+@bot.tree.command(name="starter", description="初期資金を受け取る")
 async def starter(interaction: discord.Interaction):
 
     create_user(interaction.user.id)
@@ -114,14 +114,12 @@ async def starter(interaction: discord.Interaction):
 
     money = cursor.fetchone()[0]
 
-    # すでに受け取っている場合
     if money > 0:
         await interaction.response.send_message(
             "すでに初期資金を受け取っています！"
         )
         return
 
-    # 50000RC付与
     cursor.execute(
         "UPDATE users SET money = 50000 WHERE user_id = ?",
         (str(interaction.user.id),)
@@ -182,7 +180,7 @@ async def pay(
     conn.commit()
 
     await interaction.response.send_message(
-        f"{ctx.author.mention} → {member.mention} に {amount}RC送金！"
+        f"{interaction.user.mention} → {member.mention} に {amount}RC送金！"
     )
 
 # ===== 起動 =====
