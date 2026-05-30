@@ -132,6 +132,45 @@ async def starter(interaction: discord.Interaction):
     )
 
 # ===== 送金 =====
+# ===== 管理者専用お金追加 =====
+@bot.tree.command(name="addmoney", description="管理者専用: お金を追加")
+@app_commands.describe(
+    member="追加する相手",
+    amount="追加する金額"
+)
+async def addmoney(
+    interaction: discord.Interaction,
+    member: discord.Member,
+    amount: int
+):
+
+    OWNER_ID = 855686564449615912
+
+    if interaction.user.id != OWNER_ID:
+        await interaction.response.send_message(
+            "このコマンドは使用できません。",
+            ephemeral=True
+        )
+        return
+
+    if amount <= 0:
+        await interaction.response.send_message(
+            "1以上の金額を入力してください。"
+        )
+        return
+
+    create_user(member.id)
+
+    cursor.execute(
+        "UPDATE users SET money = money + ? WHERE user_id = ?",
+        (amount, str(member.id))
+    )
+
+    conn.commit()
+
+    await interaction.response.send_message(
+        f"{member.mention} に {amount}RC追加しました。"
+    )
 @bot.tree.command(name="pay", description="送金")
 @app_commands.describe(
     member="送る相手",
