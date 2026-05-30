@@ -65,8 +65,10 @@ async def on_ready():
     try:
         synced = await bot.tree.sync()
         print(f"{len(synced)}個のコマンドを同期")
+        for cmd in synced:
+            print(f"- {cmd.name}")
     except Exception as e:
-        print(e)
+        print(f"同期エラー: {e}")
 
     print(f"{bot.user} 起動！")
 # ===== 所持金確認 =====
