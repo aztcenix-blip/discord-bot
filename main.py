@@ -62,10 +62,13 @@ def create_user(user_id):
 # ===== BOT起動 =====
 @bot.event
 async def on_ready():
-    synced = await bot.tree.sync()
-    print(f"{len(synced)}個のコマンドを同期")
-    print(f"{bot.user} 起動！")
+    try:
+        synced = await bot.tree.sync()
+        print(f"{len(synced)}個のコマンドを同期")
+    except Exception as e:
+        print(e)
 
+    print(f"{bot.user} 起動！")
 # ===== 所持金確認 =====
 @bot.tree.command(name="balance", description="所持金確認")
 async def balance(interaction: discord.Interaction):
