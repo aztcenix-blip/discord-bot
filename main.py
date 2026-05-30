@@ -62,7 +62,8 @@ def create_user(user_id):
 # ===== BOT起動 =====
 @bot.event
 async def on_ready():
-    await bot.tree.sync()
+    synced = await bot.tree.sync()
+    print(f"{len(synced)}個のコマンドを同期")
     print(f"{bot.user} 起動！")
 
 # ===== 所持金確認 =====
